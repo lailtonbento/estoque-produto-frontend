@@ -1,35 +1,55 @@
-import { Produto } from './../model/produto';
-
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { ProdutosService } from 'src/app/service/produtos/produtos.service';
 
+import { VendedoresService } from '../../service/vendedores/vendedores.service';
+import { Vendedor } from '../../vendedor/model/vendedor';
+import { Produto } from './../model/produto';
 
 @Component({
   selector: 'app-produtos',
   templateUrl: './produtos.component.html',
   styleUrls: ['./produtos.component.scss']
 })
-export class ProdutosComponent {
+export class ProdutosComponent implements OnInit {
 
   // Tabela
-  produtos!: Produto[];
+  produtos: Produto[] = [];
   selectedProdutos!: Produto[];
 
   // Dialogo
   produtoObj!: Produto;
   produtoDialog!: boolean;
   submitted!: boolean;
+  selectedVendedor: Vendedor[] = [];
+  vendedores: Vendedor[] = [];
 
+  // Menu
 
-  constructor(private produtosService: ProdutosService, private messageService: MessageService, private confirmationService: ConfirmationService) {
+  items!: MenuItem[];
+
+  ngOnInit() {
+    this.items = [
+      { label: 'Produtos', icon: 'pi pi-fw pi-user' },
+      { label: 'Vendedores', icon: 'pi pi-fw pi-user', url: 'http://localhost:4200/vendedores' }
+    ];
+
+  }
+
+  constructor(private produtosService: ProdutosService, private vendedoresService: VendedoresService, private messageService: MessageService, private confirmationService: ConfirmationService) {
     this.loadProdutos();
+    this.loadVendedores();
   }
 
   openNew() {
     this.produtoObj = new Produto();
     this.submitted = false;
     this.produtoDialog = true;
+  }
+  loadVendedores() {
+    this.vendedoresService.getAllVendedores().subscribe(response => {
+      this.vendedores = response;
+    })
   }
   loadProdutos() {
     this.produtosService.getAllPageableProdutos().subscribe(response => {
@@ -43,7 +63,7 @@ export class ProdutosComponent {
       header: 'Confirmar',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.produtosService.deleteByIds(this.selectedProdutos.map(p => p.id)).subscribe(() => {
+        this.produtosService.deleteByIds(this.selectedProdutos.map(p => p.id!)).subscribe(() => {
           this.loadProdutos()
           this.messageService.add({ severity: 'Sucesso', summary: 'Bem-sucedido', detail: 'Produto Deletado', life: 3000 })
         })
@@ -62,7 +82,7 @@ export class ProdutosComponent {
       header: 'Confirmar',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.produtosService.deleteById(produto.id).subscribe(() => {
+        this.produtosService.deleteById(produto.id!).subscribe(() => {
           this.loadProdutos()
           this.messageService.add({ severity: 'Sucesso', summary: 'Bem-sucedido', detail: 'Produto Deletado', life: 3000 })
         });
@@ -86,7 +106,8 @@ export class ProdutosComponent {
     if (!this.produtoObj.revendedor) {
       this.messageService.add({ severity: 'error', summary: 'Campo não preenchido', detail: 'O campo revendedor não foi preenchido', life: 3000 })
     }
-
+    this.produtoObj.vendedores = this.selectedVendedor
+    console.log(this.selectedVendedor)
     if (
       this.produtoObj.nome &&
       this.produtoObj.marca &&

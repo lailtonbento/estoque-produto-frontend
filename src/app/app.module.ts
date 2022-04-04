@@ -7,10 +7,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
 import { ProdutosService } from './service/produtos/produtos.service';
+import { VendedoresService } from './service/vendedores/vendedores.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -20,7 +22,7 @@ import { ProdutosService } from './service/produtos/produtos.service';
 
 
   ],
-  providers: [ ProdutosService, MessageService, ConfirmationService ],
+  providers: [ ProdutosService, VendedoresService, MessageService, ConfirmationService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

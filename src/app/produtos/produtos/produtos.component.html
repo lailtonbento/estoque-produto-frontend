@@ -1,3 +1,5 @@
+<p-tabMenu [model]="items"></p-tabMenu>
+<p-toast></p-toast>
 <p-toolbar>
   <div class="p-toolbar-group-left">
     <p-button class="buttonNew" label="New" icon="pi pi-plus" styleClass="p-button-success" (click)="openNew()">
@@ -8,7 +10,7 @@
 
 </p-toolbar>
 <p-table #dt [value]="produtos" [rows]="10" [paginator]="true"
-  [globalFilterFields]="['name','country.name','representative.name','status']" [(selection)]="selectedProdutos"
+  [globalFilterFields]="['id','nome','marca','revendedor']" [(selection)]="selectedProdutos"
   [rowHover]="true" dataKey="id" currentPageReportTemplate="Mostrando {first} de {last} páginas "
   [showCurrentPageReport]="true">
   <ng-template pTemplate="caption">
@@ -73,6 +75,11 @@
       <input type="text" pInputText id="revendedor" [(ngModel)]="produtoObj.revendedor" required autofocus />
       <small class="p-invalid" *ngIf="submitted && !produtoObj.revendedor">Revendedor is required.</small>
     </div>
+    <div>
+      <label for="vendedor">Vendedor</label>
+      <p-listbox [options]="vendedores" [(ngModel)]="selectedVendedor" [multiple]="true" [checkbox]="true" optionLabel="nome"></p-listbox>
+    </div>
+
 
 
   </ng-template>
@@ -84,3 +91,4 @@
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
