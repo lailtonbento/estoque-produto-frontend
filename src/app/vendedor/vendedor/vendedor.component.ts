@@ -52,7 +52,7 @@ export class VendedorComponent implements OnInit {
        accept: () => {
          this.vendedoresService.deleteByIds(this.selectedVendedores.map(p => p.id!)).subscribe(() => {
            this.loadVendedores()
-           this.messageService.add({ severity: 'Sucesso', summary: 'Bem-sucedido', detail: 'Vendedor Deletado', life: 3000 })
+           this.messageService.add({ severity: 'Sucesso', summary: 'Bem-sucedido', detail: 'Vendedores Deletado', life: 3000 })
          })
        }
      });
