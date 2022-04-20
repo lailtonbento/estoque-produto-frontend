@@ -40,6 +40,8 @@
 
 
       <td>
+        <button pButton pRipple icon="pi pi-search" class="p-button-rounded p-button-info"
+        (click)="viewVendedor(vendedor)"></button>
         <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
           (click)="editVendedor(vendedor)"></button>
         <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
@@ -54,6 +56,8 @@
   </ng-template>
 </p-table>
 
+<!-- Vendedor Dialog -->
+
 <p-dialog [(visible)]="vendedorDialog" [style]="{width: '450px'}" header="Detalhes do Vendedor" [modal]="true"
   styleClass="p-fluid">
   <ng-template pTemplate="content">
@@ -62,7 +66,11 @@
       <input type="text" pInputText id="name" [(ngModel)]="vendedorObj.nome" required autofocus />
       <small class="p-invalid" *ngIf="submitted && !vendedorObj.nome">Nome is required.</small>
     </div>
-
+    <br/>
+    <div>
+      <label for="produtos">Produtos</label>
+      <p-listbox [options]="produtos" [(ngModel)]="selectedProduto" [multiple]="true" [checkbox]="true" optionLabel="nome"></p-listbox>
+    </div>
   </ng-template>
 
   <ng-template pTemplate="footer">
@@ -72,4 +80,30 @@
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+<!-- View Vendedor-->
+
+<p-dialog [(visible)]="vendedorView" [style]="{width: '450px'}" header="Detalhes do Vendedor" [modal]="true"
+  styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="p-field">
+      <label for="nome">Nome</label>
+      <input type="text" disabled pInputText id="name" [(ngModel)]="vendedorObj.nome" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !vendedorObj.nome">Nome is required.</small>
+    </div>
+    <br/>
+    <div>
+      <label for="produtos">Produtos</label>
+      <p-listbox [options]="produtos" [(ngModel)]="selectedProduto" [disabled]="true" optionLabel="nome"></p-listbox>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideView()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+
 

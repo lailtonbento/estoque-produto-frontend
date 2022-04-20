@@ -24,7 +24,9 @@ export class ProdutosComponent implements OnInit {
   selectedVendedor: Vendedor[] = [];
   vendedores: Vendedor[] = [];
 
-  // Menu
+  // View
+
+  produtoView!: boolean;
 
   items!: MenuItem[];
 
@@ -74,6 +76,10 @@ export class ProdutosComponent implements OnInit {
     this.produtoObj = produto
     this.produtoDialog = true;
   }
+  viewProduto(produto: Produto) {
+    this.produtoObj = produto
+    this.produtoView = true;
+  }
 
 
   deleteProduto(produto: Produto) {
@@ -92,6 +98,11 @@ export class ProdutosComponent implements OnInit {
 
   hideDialog() {
     this.produtoDialog = false;
+    this.produtoView = false;
+    this.submitted = false;
+  }
+  hideView() {
+    this.produtoView = false;
     this.submitted = false;
   }
 
@@ -106,7 +117,7 @@ export class ProdutosComponent implements OnInit {
     if (!this.produtoObj.revendedor) {
       this.messageService.add({ severity: 'error', summary: 'Campo não preenchido', detail: 'O campo revendedor não foi preenchido', life: 3000 })
     }
-    this.produtoObj.vendedores = this.selectedVendedor
+    this.produtoObj.vendedores = this.selectedVendedor.map(vendedor => ({id: vendedor.id}))
     console.log(this.selectedVendedor)
     if (
       this.produtoObj.nome &&

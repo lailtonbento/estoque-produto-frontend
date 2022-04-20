@@ -2,6 +2,8 @@ import { Component, OnInit} from '@angular/core';
 import { ConfirmationService, MessageService, MenuItem } from 'primeng/api';
 import { VendedoresService } from '../../service/vendedores/vendedores.service';
 import { Vendedor } from '../model/vendedor';
+import { Produto } from '../../produtos/model/produto';
+import { ProdutosService } from 'src/app/service/produtos/produtos.service';
 
 @Component({
   selector: 'app-vendedor',
@@ -11,13 +13,17 @@ import { Vendedor } from '../model/vendedor';
 export class VendedorComponent implements OnInit {
    // Tabela
    vendedores: Vendedor[] = [];
-   selectedVendedores!: Vendedor[];
+  selectedVendedores!: Vendedor[];
+  produtos: Produto[] = [];
 
    // Dialogo
+   selectedProduto!: Produto[];
    vendedorObj!: Vendedor;
    vendedorDialog!: boolean;
    submitted!: boolean;
-    // Menu
+
+  // View
+  vendedorView!: boolean;
 
     items!: MenuItem[];
     ngOnInit() {
@@ -29,8 +35,9 @@ export class VendedorComponent implements OnInit {
     }
 
 
-   constructor(private vendedoresService: VendedoresService, private messageService: MessageService, private confirmationService: ConfirmationService) {
+   constructor(private vendedoresService: VendedoresService,private produtosService: ProdutosService, private messageService: MessageService, private confirmationService: ConfirmationService) {
      this.loadVendedores();
+     this.loadProdutos();
    }
 
    openNew() {
@@ -43,6 +50,11 @@ export class VendedorComponent implements OnInit {
        this.vendedores = response.content;
      })
    }
+   loadProdutos() {
+    this.produtosService.getAllPageableProdutos().subscribe(response => {
+      this.produtos = response.content;
+    })
+  }
 
    deleteSelectedVendedores() {
      this.confirmationService.confirm({
@@ -61,6 +73,10 @@ export class VendedorComponent implements OnInit {
      this.vendedorObj = vendedor
      this.vendedorDialog = true;
    }
+   viewVendedor(vendedor: Vendedor) {
+    this.vendedorObj = vendedor
+    this.vendedorView = true;
+  }
 
 
    deleteVendedor(vendedor: Vendedor) {
@@ -82,12 +98,18 @@ export class VendedorComponent implements OnInit {
      this.submitted = false;
    }
 
+   hideView() {
+    this.vendedorView = false;
+    this.submitted = false;
+   }
+
    saveVendedor() {
      this.submitted = true
      if (!this.vendedorObj.nome) {
        this.messageService.add({ severity: 'error', summary: 'Campo não preenchido', detail: 'O campo nome não foi preenchido', life: 3000 })
      }
-
+     this.vendedorObj.produto = this.selectedProduto
+    console.log(this.selectedProduto)
      if (
        this.vendedorObj.nome
      ) {
